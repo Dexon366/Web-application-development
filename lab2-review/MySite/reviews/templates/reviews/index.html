@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отзывы о технике</title>
+    <link rel="stylesheet" href="{% static 'reviews/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>Отзывы о технике</h1>
+            <p>Мнения пользователей о популярных устройствах</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="intro">
+            <h2>Последние отзывы</h2>
+            <p>
+                Здесь представлены отзывы пользователей о различных
+                устройствах. Отзывы отсортированы по дате создания.
+            </p>
+        </section>
+
+        <section class="reviews">
+            {% for review in reviews %}
+                <article class="review-card">
+                    {% if review.image %}
+                        <img
+                            class="review-image"
+                            src="{{ review.image.url }}"
+                            alt="{{ review.product_name }}"
+                        >
+                    {% endif %}
+
+                    <div class="review-content">
+                        <div class="review-heading">
+                            <h3>{{ review.product_name }}</h3>
+                            <span class="rating">
+                                ★ {{ review.rating }}/5
+                            </span>
+                        </div>
+
+                        <p class="author">
+                            Автор: {{ review.author }}
+                        </p>
+
+                        <p class="review-text">
+                            {{ review.text }}
+                        </p>
+
+                        <p class="date">
+                            {{ review.created_at|date:"d E Y, H:i" }}
+                        </p>
+
+                        {% if review.rating > 3 %}
+                            <span class="positive">
+                                Высокая оценка
+                            </span>
+                        {% else %}
+                            <span class="negative">
+                                Низкая оценка
+                            </span>
+                        {% endif %}
+                    </div>
+                </article>
+            {% empty %}
+                <p class="empty">
+                    Пока отзывов нет. Добавьте первый отзыв через админку.
+                </p>
+            {% endfor %}
+        </section>
+
+        <section class="high-rated">
+            <h2>Отзывы с оценкой выше 3</h2>
+
+            <p>
+                Количество отзывов с высокой оценкой:
+                <strong>{{ high_rated_reviews|length }}</strong>
+            </p>
+
+            {% for review in high_rated_reviews %}
+                <div class="high-rated-item">
+                    <strong>{{ review.product_name }}</strong>
+                    — {{ review.rating }}/5
+                </div>
+            {% empty %}
+                <p>Отзывов с оценкой выше 3 пока нет.</p>
+            {% endfor %}
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Лабораторная работа № 3. Шаблоны и админка Django</p>
+        </div>
+    </footer>
+</body>
+</html>
